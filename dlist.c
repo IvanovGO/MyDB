@@ -42,17 +42,17 @@ return false;
 
 
 int dlist_add(dlist*list,dnode * node){//добавление узла в конец
-//puts("dlist add");
-if (dlist_is_empty(list)){//puts("empty");
+puts("dlist add");
+if (dlist_is_empty(list)){puts("empty");
 list->head=node;
 list->tail=node;
-//puts("-----------add in empty---------");
+puts("-----------add in empty---------");
 }  else 
 {
 node->prev=list->head;
 node->prev->next=node;
 list->head=node;
-//puts("add in not empty");
+puts("add in not empty");
 }
 list->count++;
 node->list=list;
@@ -82,7 +82,8 @@ while(p) {
 }
 
 unsigned long dlist_list(dlist * list){//вывод узлов
-if (!list->tail) return -1;
+if (!list->tail) {puts("dlist_list:this is tail");
+			return -1;}
 unsigned long c=0;
 dnode * p = list->tail;
 while(p) {c++;
@@ -92,8 +93,8 @@ return c;}
 
 int dnode_print(dnode * node){
 
-if (node->str) printf("Str= %s",node->str);
-if (node->num) printf("Num=%1.1f\n",*node->num);
+if (node->str) printf("Str= %s\n",node->str);
+if (node->num) printf("Num=%3i\n",*node->num);
 
 //printf("prev-%p next-%i str-%p num-%p \n",(void*)node,		
 //				node->str,node->num,(void*)node->list);
@@ -184,9 +185,10 @@ else return NULL;
 
 
 
-dnode * dnode_add(char * str,double * num){
+dnode * dnode_add(char * str,int * num){
 dnode * p = (dnode*)malloc(sizeof(dnode));
-if (!p) return NULL;
+if (!p) { puts("node cannot be created");
+	return NULL;}
 /*----*/
 p->str=str;
 p->num=num;

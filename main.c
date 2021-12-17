@@ -9,13 +9,14 @@ printf("Учебная СУБД.\nВведите HELP для полученя п
 dlist * tree = dlist_init();
 dbase * tables=dbase_init();
 
-char command[0xff]=""; 
+char command[0xff]; 
 
 while (strcmp(command,"quit")){
 printf(">>");
-fgets(command,0xff,stdin);
+gets(command);
 parse_string(tree,(char*)command);
-if (parse_comm(tree,tables)==-1) return 0;
+//if (parse_comm(tree,tables)==-1) return 0;
+dlist_list(tree);
 }
 puts("Exiting");
 return 0;

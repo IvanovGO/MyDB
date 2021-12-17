@@ -5,7 +5,7 @@ typedef struct dnode {
 struct dnode * prev;
 struct dlist * list;
 char * str;
-double * num;
+int * num;
 struct dnode * next; } dnode;   
 	        
 
@@ -34,7 +34,7 @@ unsigned long dlist_list(dlist * list);//вывод узлов
 
 dnode * dlist_remove(dnode * node);//удаление узла
 
-dnode * dnode_add(char * str,double * num);
+dnode * dnode_add(char * str,int * num);
 
 int dnode_print(dnode * node);
 
