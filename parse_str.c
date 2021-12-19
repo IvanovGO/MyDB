@@ -9,9 +9,38 @@
 #define COMMA '.' //decimal divider
 
 
+bool isSpacer(char * ch){
+switch (ch[0]){
+case ' ':;
+case '\t':;
+case '\r':;
+case '\n':;
+return true;}
+return false;}
+
+bool isDivider(char * ch){
+if (*ch<0x30) return true;
+if (*ch>0x7a) return true;
+switch (ch[0]){
+case '[':;
+case ']':;
+case ';':;
+case '*':;
+case ':':;
+case '`':;
+case 0x5c:;
+case '^':;
+case '?':;
+case '@':;
+return true;
+}
+return false;
+}
+
 void parse_string(dlist * list, char * str){
 
-char delim[1] = " ";
+char delim[] = " ";
+//"( )*,';=:/|<->";
 
 
 char *ptr = strtok(str, delim);

@@ -42,17 +42,17 @@ return false;
 
 
 int dlist_add(dlist*list,dnode * node){//добавление узла в конец
-puts("dlist add");
-if (dlist_is_empty(list)){puts("empty");
+///puts("dlist add");
+if (dlist_is_empty(list)){//puts("empty");
 list->head=node;
 list->tail=node;
-puts("-----------add in empty---------");
+//puts("-----------add in empty---------");
 }  else 
 {
 node->prev=list->head;
 node->prev->next=node;
 list->head=node;
-puts("add in not empty");
+//puts("add in not empty");
 }
 list->count++;
 node->list=list;
@@ -82,7 +82,7 @@ while(p) {
 }
 
 unsigned long dlist_list(dlist * list){//вывод узлов
-if (!list->tail) {puts("dlist_list:this is tail");
+if (!list->tail) {//puts("dlist_list:this is tail");
 			return -1;}
 unsigned long c=0;
 dnode * p = list->tail;
