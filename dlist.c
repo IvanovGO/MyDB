@@ -3,22 +3,9 @@
 #include <stdio.h>
 //#include <stdbool.h>
 
-/*
-typedef struct dnode {
-struct dnode * prev;
-struct dlist * list;
-int data;
-struct dnode * next; } dnode;   
-	        
-
-typedef struct dlist {
-struct dnode * head;
-struct dnode * tail;
-long count;          } dlist;
-*/
 
 
-
+//------------------------------------CREATE
 dlist * dlist_init(){//создание двусвязанного списка
 dlist * p = (dlist *)malloc(sizeof(dlist)); 
 if (!p) return NULL;
@@ -28,19 +15,19 @@ p->tail=NULL;
 return p;
 }
 
-
+//------------------------------------IS EMPTY
 bool dlist_is_empty(dlist * list){
 if (!list->head&&!list->tail) return true;
 return false;
 }
-
+//------------------------------------IS TRIVIAL
 bool dlist_is_trivial(dlist * list){
 if (list->head==list->tail) return true;
 return false;
 }
 
 
-
+//------------------------------------ADD
 int dlist_add(dlist*list,dnode * node){//добавление узла в конец
 ///puts("dlist add");
 if (dlist_is_empty(list)){//puts("empty");
@@ -59,6 +46,8 @@ node->list=list;
 return list->count;
 }
 
+
+//-----------------------------------INS
 int dlist_ins(dlist * list, dnode * node){ //вставка узла в начало
 if (dlist_is_empty(list)){//puts("empty");
 list->head=node;
@@ -72,53 +61,38 @@ return list->count;
 }
 
 
-
+//-----------------------------------CLEAR
 void dlist_clear(dlist * list){
-if (!list->tail) return;
+//puts("clearing list");
+list->tail=NULL;
+list->head=NULL;
+list->count=0;
+/*if (!list->tail) return;
 dnode * p = list->tail;
 while(p) {
 	dlist_remove(p);
-	p=p->next;}
+	p=p->next;}*/
 }
-
+//-----------------------------------LIST
 unsigned long dlist_list(dlist * list){//вывод узлов
-if (!list->tail) {//puts("dlist_list:this is tail");
-			return -1;}
+//if (!list->tail) {//puts("dlist_list:this is tail");
+//				return -1;}
+//puts("dlist_list:this is no tail");
 unsigned long c=0;
 dnode * p = list->tail;
+if (p) 
 while(p) {c++;
 	dnode_print(p);
 	p=p->next;}
 return c;}
-
+//----------------------------------PRINT
 int dnode_print(dnode * node){
-
 if (node->str) printf("Str= %s\n",node->str);
 if (node->num) printf("Num=%3i\n",*node->num);
-
-//printf("prev-%p next-%i str-%p num-%p \n",(void*)node,		
-//				node->str,node->num,(void*)node->list);
-
-return 0;
-}
-
-/*
-dnode * dlist_remove(dnode * node){//удаление узла
-puts("dlist remove");
-printf("count %li ",node->list->count);
-printf("count-- %li \n",node->list->count);
-if (node->list->head!=node) {node->prev->next=node->next->prev;
-			     return node;} else node->list->head=node->prev;
-node->list->count--;
-if (node->list->tail==node) {node->list->tail=NULL;
-if (node->list->count) {
-      	printf("Warning! Count mismatch with dlist is empty. %li nodes is orphaned!",node->list->count);
-  			}return node;}
-node->list=NULL;
-return node;
-}*/
+return 0;}
 
 
+//---------------------------------REMOVE
 dnode * dlist_remove(dnode * node){
 if (!node) return NULL;
 //puts("dlist_remove");

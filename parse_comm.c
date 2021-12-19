@@ -25,7 +25,7 @@ int parse_comm( dlist * list, dbase * base){
 			        
 //устанавливаем укзатель в начало списка			        
 dnode * p = list->tail;
-
+if (!list->count) return 0;
 //-------------------------------------CREATE----------------------	
 	C_CREATE //если команда создать создаем бесконечный цикл для удобства
 	{ puts("Create table recognized");  
@@ -49,6 +49,7 @@ dnode * p = list->tail;
                 		puts("column found");
                 		}
               }_isnok
+              break;
 	    }// CREATE END---------------------------
 	    
 //все прошло успешно очищаем команду

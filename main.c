@@ -22,13 +22,16 @@ char command[0xff];
 
 //fscanf(datafile,"%s",str);
 
-while(!feof(datafile)){
-fgets(command,0xff,datafile);
-//printf("Read  - %s",command);
-parse_string(tree,command);
-parse_comm(tree,tables);
+do{
 
-}
+if(fgets(command,0xff,datafile)){
+	printf("------------Command acheive - %s !!!",command);
+	parse_string(tree,command);
+	parse_comm(tree,tables);}
+
+dlist_clear(tree); 
+
+}while(!feof(datafile));
 
 fclose(datafile);
 return 0;
