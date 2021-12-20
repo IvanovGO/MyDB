@@ -1,0 +1,43 @@
+# depslib dependency file v1.0
+1639938515 source:/home/gri/Documents/Programming/C/mydb/dlist.c
+	"dlist.h"
+	<stdlib.h>
+	<stdio.h>
+
+1639707229 /home/gri/Documents/Programming/C/mydb/dlist.h
+	<stdbool.h>
+
+1639949404 source:/home/gri/Documents/Programming/C/mydb/dbase.c
+	"dbase.h"
+	<stdlib.h>
+	<stdio.h>
+	<string.h>
+
+1639924663 /home/gri/Documents/Programming/C/mydb/dbase.h
+	<stdbool.h>
+
+1639944389 source:/home/gri/Documents/Programming/C/mydb/main.c
+	<string.h>
+	"parser.h"
+	<stdio.h>
+
+1639942515 /home/gri/Documents/Programming/C/mydb/parser.h
+	"dlist.h"
+	"dbase.h"
+
+1639949843 source:/home/gri/Documents/Programming/C/mydb/parse_comm.c
+	"parser.h"
+	<stdio.h>
+	<string.h>
+	<ctype.h>
+	<stdlib.h>
+
+1639943123 source:/home/gri/Documents/Programming/C/mydb/parse_str.c
+	<string.h>
+	<stdio.h>
+	<stdlib.h>
+	<math.h>
+	<stdbool.h>
+	"parser.h"
+	<ctype.h>
+

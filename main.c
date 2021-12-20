@@ -1,38 +1,46 @@
 #include <string.h> 
-
+#include <stdlib.h>
 #include "parser.h"
 #include <stdio.h>
+
+/**************************************************************
+Учебный проект - СУБД, системы управлдения базами данных 
+вводите команды языка SQL  CREATE SELECT DELETE INSERT 
+***************************************************************/
 
 
 
 int main(int argc, char * argv[]){
-printf("Учебная СУБД.\n");
-if (argc!=2) {puts("incorrect count of arguments"); return -1;}
-dlist * tree = dlist_init();
-dbase * tables=dbase_init("test");
-
-
+dlist * tree = dlist_init();//дерево для стека команды
+dbase * tables=dbase_init("test");//создаем базу данных
+if (argc==2) {//если введен аргумент 
 FILE * datafile;
-
 datafile = fopen(argv[1],"r");
-
-if (!datafile) {puts("cant open file"); return -2;}
-
+if (!datafile) {puts("cant open file"); return -2;}//и это было имя сущевствующего файла
 char command[0xff]; 
-
-//fscanf(datafile,"%s",str);
-
-do{
-
+do{//читем команды из него
 if(fgets(command,0xff,datafile)){
-	printf("------------Command acheive - %s !!!",command);
-	parse_string(tree,command);
-	parse_comm(tree,tables);}
+	//printf("------------Command acheive - %s !!!",command);
+	parse_string(tree,command);//парсим команду в последовательность двусвязного списка
+	parse_comm(tree,tables);}//разбираем последовательность как команду языка SQL
+dlist_clear(tree); //чистим стек команды
+}while(!feof(datafile));//повторяем со следуюзей стркоой файла
+fclose(datafile);//закрываем файл
+} //после чего и/или если файла не было 
+puts("Input commands...");
+char cmnd[80];
+do {//принимаем команды с стандартного ввода/вывода
+dlist_clear(tree); //сначла чистим стек команд
+printf("\n>>");//печатаем приглашение
+fflush(stdin);
+fgets(cmnd,80,stdin);//считываем из стандартного фала ввода/вывода
+fflush(stdin);
+printf("cmnd-%s\n",cmnd);//печатем что получили для контроля
+parse_string(tree,cmnd);//парсим команду
+dlist_list(tree);//вывод стека команды для контроля
+parse_comm(tree,tables);//разбор команды
+//printf("cmnd=%s",cmnd);
 
-dlist_clear(tree); 
-
-}while(!feof(datafile));
-
-fclose(datafile);
-return 0;
+} while (strcmp(tree->tail->str,"quit"));//повторяем пока не получим quit
+return 0;//всё
 }
