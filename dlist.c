@@ -66,12 +66,16 @@ void dlist_clear(dlist * list){
 //puts("clearing list");
 list->tail=NULL;
 list->head=NULL;
+/*
+if (!list) return;
 list->count=0;
-/*if (!list->tail) return;
 dnode * p = list->tail;
 while(p) {
 	dlist_remove(p);
-	p=p->next;}*/
+	p=p->next;}
+list->tail=NULL;
+list->head=NULL;
+*/
 }
 //-----------------------------------LIST
 unsigned long dlist_list(dlist * list){//вывод узлов

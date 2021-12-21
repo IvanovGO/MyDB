@@ -23,6 +23,8 @@ if(fgets(command,0xff,datafile)){
 	//printf("------------Command acheive - %s !!!",command);
 	parse_string(tree,command);//парсим команду в последовательность двусвязного списка
 	parse_comm(tree,tables);}//разбираем последовательность как команду языка SQL
+//puts("i home!!");
+fflush(datafile);
 dlist_clear(tree); //чистим стек команды
 }while(!feof(datafile));//повторяем со следуюзей стркоой файла
 fclose(datafile);//закрываем файл
@@ -32,15 +34,16 @@ char cmnd[80];
 do {//принимаем команды с стандартного ввода/вывода
 dlist_clear(tree); //сначла чистим стек команд
 printf("\n>>");//печатаем приглашение
-fflush(stdin);
+//fflush(stdin);
 fgets(cmnd,80,stdin);//считываем из стандартного фала ввода/вывода
-fflush(stdin);
-printf("cmnd-%s\n",cmnd);//печатем что получили для контроля
+//fflush(stdin);
+//printf("cmnd-%s\n",cmnd);//печатем что получили для контроля
 parse_string(tree,cmnd);//парсим команду
 dlist_list(tree);//вывод стека команды для контроля
 parse_comm(tree,tables);//разбор команды
 //printf("cmnd=%s",cmnd);
-
-} while (strcmp(tree->tail->str,"quit"));//повторяем пока не получим quit
+//puts("i home!!");
+//printf("%s\n",cmnd);
+} while (cmnd[0]!='q');//повторяем пока не получим quit
 return 0;//всё
 }

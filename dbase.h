@@ -52,6 +52,7 @@ struct dptodo * next;//следующий!
 } dptodo;
 
 
+
 typedef struct dbase {//структура базы данных
 char * name;//имя
 struct dtable * head;//головна таблица
@@ -68,7 +69,7 @@ unsigned int dbase_ins(dbase * base, dtable * table);//вставка табли
 bool dbase_is_empty(dbase * base);//проверка базы на наличие хоть одной таблицы
 bool dbase_is_trivial(dbase * base);//в базе одна таблица 
 dtable * dbase_remove(dtable * table);//удалить таблицу
-
+dtable * dbase_find(dbase * base,char * name);//
 //-------------------------TABLE WORKING
 dtable * dtable_create( char * name );//создание таблицы
 unsigned int dtable_add(dtable * table,dcol * col);//добавление колонки к таблице
@@ -78,9 +79,11 @@ dptodo * dtable_create_todo(dtable * table,char * colname);//создать за
 dptodo * dtable_todo_add(dptodo * todo,char * colname);//добавить к заданию
 dcol * dtable_find(dtable * table,char * colname);//поиск столбца по имени.
 bool dtable_is_empty(dtable * table);
+dcol * table_find(dtable * table,char * name);//
+unsigned int dtable_print_todo (dptodo * todo);//
 //--------------------------COLUMN WORKING
 dcol * dcol_create(char * name, bool indexed);//создать колонку
-int dcell_add(dtable * table,dcell * cell);//
+int dcol_add(dcol * col,dcell * cell);//
 bool dcol_is_empty(dcol * col);
 dcell * dcol_remove(dcell * cell);//
 dcell * dcol_find_cell_index(dcol*col,unsigned int index);//

@@ -16,6 +16,7 @@
 #define  C_INSERT if (!strcmp(p->str,"INSERT")) while(1)  
 #define  C_SELECT if (!strcmp(p->str,"SELECT")) while(1) 
 #define  C_DELETE if (!strcmp(p->str,"DELETE")) while(1) 
+#define  C_DESCRIBE if (!strcmp(p->str,"DESCRIBE")) while(1) 
 
 
 
@@ -24,10 +25,11 @@ int parse_comm( dlist * list, dbase * base){
 //функция получает ссылку на список dlist с командами  
 //и ссылку на базу данных dbase
 //-------------------------------------------------------
-
+int count=0;
 char * tmst=NULL;
 //устанавливаем укзатель в начало списка			        
-dnode * p = list->tail;
+if (!list->tail) return 0;
+ dnode * p = list->tail;
 _step
 _stback
 if (!list->count) return 0;
@@ -42,10 +44,11 @@ if (!list->count) return 0;
         if (!isDivider(_s)) {printf("Table name %s is specifyed \n",_s);}//смотрим имя таблицы
            else {puts("Incorrect table name");return -1;}//если начинается с разделителя то ошибка
               
-              
+              dtable * t;
          //какое-то соответствующее имя получено - можно создавать таблицу
          //создаем таблицу без столбцов	 и крепим ее к базе   	
-         dtable * t = dtable_create(_s );
+         if (!dbase_find(base,_s))  { t = dtable_create(_s );}
+         	else {printf("Table %s is already present\n"); return -1;}
          dbase_add(base,t);
 	// дальше у нас может быть либо ; либо скобки с именами и типами столбцов для таблицы
         _step ; 
@@ -55,43 +58,122 @@ if (!list->count) return 0;
                 		puts(" Open bracket ( found - adding columns");
                 			
                 		while(1){//заводим цикл по скобкам
-                			_step;//шагаем
-					_tst	//если нет закрывающего
-						
-                			if (_s[0]==')') 
-                				 {puts("Closing bracket ) is found");break;}
-                			tmst=_s;//сохраняем, скорей всего, имя столбца
-                			_step;//шагаем на следующий
-                			_tst
-                			if (!strcmp(_s,"INDEXED"))//и проверяем индексируемый ли столбец
-               				{puts("INDEXED found");//если да создаем столбец как индексируемый
-	                		dtable_add(t,dcol_create(_s,true));
-	                		_step;//шагаем
+	 _step
+	    if (_s[0]==')') {puts("Bracket closed, Success");break;}
+	    if (_s[0]==',') {puts(", found");continue;}
+	    if (_s[0]=='"') {puts(" string found");  continue;}
+	    if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -2;}
+            if (!strcmp(_s,"INDEXED"))//и проверяем индексируемый ли столбец
+            {puts("INDEXED found");//если да создаем столбец как индексируемый
+	      		_step;//шагаем
+	      			_step;//шагаем
+	      		dtable_add(t,dcol_create(_s,true));
 	                		}else//если нет создаем как неиндексируемый
 	                			{puts("col is not INDEXED");
 						dtable_add(t,dcol_create(_s,false));}
-					//дальше должна быть либо запятая либо скобка	
-					//_step;//шагаем и проверяем на запятую
-					_tst
-	                		if (_s[0]!=',') continue;//если нет то 
-	                		if (_s[0]==';') return 1;
-                			}//CREATE employees (id INDEXED, name INDEXED,  lol  );
+                			}
                 		}
-             
-              return 1;
+                		_step
+                		if (_s[0]==';') {
+                			printf("Table %s succesfully created",t->name);
+                			printf("with %i columns added",t->count);
+                			return 1;}
+              puts ("Unsuspected end of command!");
+              return -1;
 	    }// CREATE END---------------------------
-	 
+//===============================================INSERT=================================	 
+	 C_INSERT
+	  
+	 {puts("insert found");
+	 _step
+	 if (!isSymbol(_s)) {printf("unexpected input%s\n",_s);return -2;}
+	 if (!strcmp(_s,"INTO")) {puts ("INTO acheived"); _step }
+	 dtable * tmptable = dbase_find(base,_s);//
+	 if (!tmptable) {printf("There isn`t table %s",_s);return -2;} else 
+	 		{printf("Table %s found\n",_s);
+	 		printf("%i columns there\n",tmptable->count);
+	 		}
+	 // дальше у нас может быть либо ; либо скобки с именами и типами столбцов для таблицы
+         _step ; 
+                if (_s[0]==';') {return 2;}//если находим ; то уходим без ошибки
+                	if (_s[0]=='(') {//находим открытые скобки
+                		puts(" Open bracket ( found - adding cells");	 
+                dcol * tcol = tmptable->tail;
+	
+	 while(1){//-------------------------------------------
+	 _step
+	    if (_s[0]==')') {puts("Bracket closed, Success");break;}
+	    if (_s[0]==',') {puts(", found");continue;}
+	    if (_s[0]=='"') {printf(" string %i found\n",count); count++; continue;}
+	    if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -2;}
+            if (count>(tmptable->count*2)) 
+            		{printf("trying to add more cols there in table%li\n",tmptable->count);break;}
+	    dcol_add(tcol,create_cell(_s));//
+	    tcol=tcol->next;//
+	    if (!tcol) {printf("There isn`t col named %s\n",tcol->name);  continue;}	    
+	 	}//---------------------------------------------
+	 	                }
+	 _step
+	 if (_s[0]==';') {printf("Inserting %i cols succesfull\n",count/2);return 2;}
+	 return 2;}
+//=========================================SELECT=======================================	 
 	 C_SELECT
 	 {puts("select found");
-	 return 2;}
-	 
-	 C_INSERT
-	 {puts("insert found");
-	 return 3;}
+	 dptodo * todo=NULL;
+	 _step
+	 if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
+	 if (!strcmp(_s,"FROM")) {puts ("FROM acheived"); _step }
+	 dtable * tmptable = dbase_find(base,_s);//
 
+	 if (!tmptable) {printf("There isn`t table %s",_s);return -3;} else 
+	 		printf("Table %s found\n",_s);
+	 _step
+	 if (!strcmp(_s,"WHERE")) {puts ("WHERE acheived");
+while(1){
+	 _step
+	 if (_s[0]=='=') continue;
+	 	 if (_s[0]=='<') continue;
+	 	 	 if (_s[0]=='>') continue;
+	 	 	 	 if (_s[0]=='|') continue;
+	 	 	 	 if (_s[0]==')') break;
+	 	 	 	 if (_s[0]==',') continue;
+	 	 	 	 if (_s[0]=='"'){continue;}
+	 if (isCharacter(_s)) 	 
+	if (!todo) todo = dtable_create_todo(tmptable,_s); else{
+	printf("Trying %s in todo add\n",_s);
+	todo=dtable_todo_add(todo,_s);	 
+         }
+         
+         }
+         dtable_print_todo(todo);
+	}
+	
+          if (_s[0]==';') {puts("Select succesfull");return 3;}
+	 
+	 
+	 return 3;}
+//=======================================DELETE==========================================
 	 C_DELETE
 	 {puts("delete found");
 	 return 4;}
+	 
+//=======================================DESCRIBE========================================
+          C_DESCRIBE 
+          { puts("describe found");
+          _step
+            if(!isSymbol(_s))  {printf("unexpected input%s\n",_s);return -4;}
+          	 dtable * tmptable = dbase_find(base,_s);//
+             if (!tmptable) {printf("There isn`t table %s",_s);return -4;} else 
+	 		{printf("Table %s found\n",_s);
+	 	for (dcol * c=tmptable->tail;c!=NULL;c=c->next)
+	 		printf("Column name-|%s|\n",c->name);
+	 		}
+	 		_step
+	             if (_s[0]==';') {puts("Describyng succesfull");return 4;}
+          return -4;}
+
+
+	 
 	 
 puts("Unrekognized command. Skipping...");	 
 	 

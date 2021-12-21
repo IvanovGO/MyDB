@@ -19,3 +19,5 @@ bool isDivider(char * ch);
 bool isDigit(char * ch);
 
 bool isCharacter(char * ch);
+
+bool isSymbol(char * ch);

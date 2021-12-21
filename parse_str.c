@@ -37,6 +37,15 @@ if ((*ch>0x60)&&(*ch<0x7b)) return true;///abs...z
 return false;
 }
 
+bool isSymbol(char * ch){//является ли символ алфавит
+if ((*ch>0x40)&&(*ch<0x5b)) return true;//ABC...Z
+if ((*ch>0x60)&&(*ch<0x7b)) return true;///abs...z
+return false;
+}
+
+
+
+
 void parse_string(dlist * list, char * str){//функция пополняет список синтаксичесими элементами из строки
 char len=0;//заводим счетчик символов для слов
 for (char * ch=str;*ch!=0x00;ch++){//пробегаем по строке указателем на символ

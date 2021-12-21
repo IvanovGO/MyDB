@@ -105,6 +105,10 @@ table->prev=NULL;
 table->base=NULL;//уходим из базы
 return table;
 }
+dtable * dbase_find(dbase * base,char * name){//
+for(dtable * p = base->tail;p!=NULL;p=p->next)
+	if (!strcmp(p->name,name)) return p;
+return NULL;}
 //*********************************************************************
 //-------------------------TABLE WORKING
 //*********************************************************************
@@ -135,7 +139,6 @@ col->table=table;//прописываемся
 return table->count;//возвращаем количество колонок
 }
 //--------------------------------------УДАЛЕНИЕ КОЛОНОК ИЗ ТАБЛИЦЫ
-
 dcol * dtable_remove(dcol * col){//
 if (!col) return NULL;//если передали пустой указатель то выходим
 //puts("dtable_remove");
@@ -173,6 +176,11 @@ col->prev=NULL;
 col->table=NULL;//уходим из таблицы
 return col;
 }
+//------------------------------------ПОИСК СТОЛБЦА В ТАБЛИЦЕ
+dcol * table_find(dtable * table,char * name){//
+for (dcol * c = table->tail;c!=NULL;c=c->next)
+	if (!strcmp(c->name,name)) return c;
+return NULL;}
 //-------------------------------------В ТАБЛИЦЕ ЧТОТО ЕСТЬ?
 bool dtable_is_empty(dtable * table){
 if (!table->head&&!table->tail) return true;
@@ -180,52 +188,63 @@ return false;}
 //-------------------------------------ВЫВОД ТАБЛИЦЫ НА ПЕЧАТЬ
 unsigned int dtable_print_todo (dptodo * todo){
 // функция печати таблицы согласно задания todo 
+puts("PRINT TABLE");
 dcell * c;
 unsigned int ind = 0;
-unsigned int max_row=todo->col->table->count;//количество строк для вывода
+unsigned int max_row=todo->col->count;//количество строк для вывода
+printf("Rows to print=%i\n",max_row);
 char * s;//
 
 //выводим заговолок - названия столбцов
 printf("+--+");//рисуем таблицу
-for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) printf("--------+");
-printf("\n|");//печатаем псевдографику
-for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) 
-		printf("%8s|",strncpy(s, prn_col->col->name, 8));
-printf("\n+");
-for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) printf("--------+");
+for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) printf("--------------------+");
+printf("\n|No|");//печатаем псевдографику
+for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) {
+			
+		printf("%20s|", prn_col->col->name);}
+		
+		
+printf("\n+--+");
+for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) printf("--------------------+");
 //печатаем ячейки	
   for(unsigned int  i = 1;i!=max_row+1;i++)  {//побегаем по строкам
-  	printf("\n%3i|",ind);//псевдографика
+  	printf("\n|%2i|",ind);//псевдографика
   	ind++;
 	for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next){//пробегаем по колонкам
            c = dcol_find_cell_index(prn_col->col,i);//ищем строку в колонке по текущему индексу строки
-           if (c) {printf ("%8s|",c->string);} else //печатаем если ячейка в колонке с таким индексом есть
-           		puts("  nAn   |");//если нет то данные не укaзны при добавлении колонки
+           
+           if (c) {printf ("%20s|",c->string);} else //печатаем если ячейка в колонке с таким индексом есть
+           		printf("%20s|","-NaN-");//если нет то данные не укaзны при добавлении колонки
 	}
 	}
-printf("\n+");
-for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) printf("--------+");
+printf("\n+--+");
+for (dptodo * prn_col = todo;prn_col!=NULL;prn_col=prn_col->next) printf("--------------------+");
+printf("\nPrinting succesfull...\n");
 return ind;}
 //----------------------------------------СОЗДАНИЕ ЗАДАНИЯ
 dptodo * dtable_create_todo(dtable * table,char * colname){//создать задание
 dptodo * todo = (dptodo*)malloc(sizeof(dptodo));//выделяем память
 todo->col=dtable_find(table,colname);//ищем первую колонку
 todo->next=NULL;//следующей пока нет
+printf("Todo created. Col %s addet in todo\n", todo->col->name);
 return todo;} //возвращаем результат
 //----------------------------------------ДОБАВЛЕНИЕ К ЗАДАНИЮ
 dptodo * dtable_todo_add(dptodo * todo,char * colname){//добавить к заданию
 dcol * col = dtable_find(todo->col->table,colname);//ищем колонку по названию
 if (col) { dptodo * new_todo = (dptodo *)malloc(sizeof(dptodo));//если нашли
+		puts("Adding");
             new_todo->col=col;
-            new_todo->next=NULL;
-            todo->next=new_todo;
+		if (todo->col->count>new_todo->col->count) new_todo->col->count=todo->col->count;
+            new_todo->next=todo;
+            printf("Column %s found with len=%i todo %p added\n",col->name,col->count,(void*)new_todo);
 	    return new_todo;}else 
 	{printf("Column %s - not found\n",colname);}
 return todo;}
 //----------------------------------------ПОИСК КОЛОНКИ ПО НАЗВАНИЮ
 dcol * dtable_find(dtable * table,char * colname){//поиск столбца по имени.
 for (dcol * col = table->tail;col!=NULL;col=col->next)//пробегаем все столбцы
-  if (!strcmp(col->name,colname)) return col;//если совпало возвращаем указатель
+  if (!strcmp(col->name,colname)){ printf("Found col %s \n",col->name);
+  	return col;}//если совпало возвращаем указатель
 return NULL;} //если не нашли ничего то возвращаем NULL
 //-----------------------------------------------------------------------------
 //****************************************************************************
@@ -259,7 +278,9 @@ cell->prev->next=cell;//задаем в предыдущей текущую ка
 col->head=cell;//записываем в колонку новую ячейку как последнюю
 //puts("add in not empty");
 }
+
 col->count++;//увеличиваем счетчик ячеек
+cell->index=col->count;
 cell->col=col;//прописываемся
 return col->count;//возвращаем количество ячеек
 }
@@ -300,7 +321,8 @@ return cell;
 //--------------------------------------ПОИСК ЯЧЕЙКИ В КОЛОНКЕ ПО ИНДЕКСУ
 dcell * dcol_find_cell_index(dcol*col,unsigned int index){//
 for (dcell * i = col->tail;i!=NULL;i=i->next)
-     if(i->index==index) return i;
+     if(i->index==index) {return i;}//printf("cell %i proseed ",i->index);
+  //  printf("fail found ");
 return NULL;
 }
 //-----------------------------------------------------------------------------
@@ -314,6 +336,7 @@ p->index=0;//индекса нет
 p->col=NULL;//колонки нет
 p->prev=NULL;//вокруг никого
 p->next=NULL;//сирота
+p->string=str;
 printf("Cell %s by adress %p sucessfully created\n",str,p);//радуемся
 return p;}//возвращаем сыслку на ячейку
 
