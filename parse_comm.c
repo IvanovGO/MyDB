@@ -3,8 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-
-#define  _step if (p->next) {p=p->next;printf("-stp-s=%s-\n",p->str);} else {puts("unexpected end");return -1;}
+//printf("-stp-s=%s-\n",p->str);puts("unexpected end");
+#define  _step if (p->next) {p=p->next;} else {return -10;}
 #define  _stback p=p->prev;
 #define  _s p->str
 //printf("!p->str=%s!",p->str);
@@ -121,6 +121,21 @@ if (!list->count) return 0;
 	 {puts("select found");
 	 dptodo * todo=NULL;
 	 _step
+	 if (_s[0]=='*') {	puts("Print whole table");
+	 		_step;
+	 		 if (!strcmp(_s,"FROM")) {puts ("FROM acheived");} else 
+	 		 	{puts("FROM expected but not founf");return -3;}
+	 		_step;
+	 		printf("Searching tabl %s\n",_s);
+	 		 dtable * tmptable = dbase_find(base,_s);//
+			 if (!tmptable) {printf("There isn`t table %s",_s);return -3;} else 
+		 		printf("Table %s found\n",_s);
+		 	dtable_print_all(tmptable);//
+		 	_step;
+		 	 if (_s[0]==';') {puts("Select succesfull");return 3;}
+		 	 puts("Unexpected end of SELECT");
+		 	return -3;	
+	 		}
 	 if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
 	 if (!strcmp(_s,"FROM")) {puts ("FROM acheived"); _step }
 	 dtable * tmptable = dbase_find(base,_s);//
@@ -155,6 +170,41 @@ while(1){
 //=======================================DELETE==========================================
 	 C_DELETE
 	 {puts("delete found");
+	 dcol * tmpcol;
+	 
+	 _step
+	 if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
+	 if (!strcmp(_s,"FROM")) {puts ("FROM acheived"); _step }
+	 dtable * tmptable = dbase_find(base,_s);//
+
+	 if (!tmptable) {printf("There isn`t table %s",_s);return -3;} else 
+	 		printf("Table %s found\n",_s);
+	 _step
+	 if (!strcmp(_s,"WHERE")) {puts ("WHERE acheived");
+while(1){
+	 _step
+	 if (_s[0]=='=') continue;
+	 	 if (_s[0]=='<') continue;
+	 	 	 if (_s[0]=='>') continue;
+	 	 	 	 if (_s[0]=='|') continue;
+	 	 	 	 if (_s[0]==')') break;
+	 	 	 	 if (_s[0]==',') continue;
+	 	 	 	 if (_s[0]=='"'){continue;}
+	 if (isCharacter(_s)) 	 {
+	
+	printf("Trying %s in todo add\n",_s);
+	tmpcol = dtable_find(tmptable,_s);
+	if (!tmpcol) {printf("Column named %s in table %s not found\n",_s,tmptable->name);} else
+	if (!dtable_remove(tmpcol)) {printf("Column %s succesfully removed\n",tmpcol->name);}
+         }
+         
+         }
+         
+	}
+	
+          if (_s[0]==';') {puts("Delet succesfull");return 3;}
+	 	 
+	 
 	 return 4;}
 	 
 //=======================================DESCRIBE========================================
