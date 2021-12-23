@@ -44,6 +44,7 @@ parse_comm(tree,tables);//разбор команды
 //printf("cmnd=%s",cmnd);
 //puts("i home!!");
 //printf("%s\n",cmnd);
-} while (cmnd[0]!='q');//повторяем пока не получим quit
+} while (!(((cmnd[0]=='e')&&(cmnd[3]=='t'))||((cmnd[0]=='E')&&(cmnd[3]=='T'))));//повторяем пока не получим quit
+puts ("Thats all, folks!");
 return 0;//всё
 }

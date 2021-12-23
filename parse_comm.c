@@ -12,11 +12,11 @@
 #define  _isok if (p)  if (p->str)
 #define  _isnok else {puts("Unespected NULL");return -1;}
 #define  _t if (p) 
-#define  C_CREATE if (!strcmp(p->str,"CREATE")) while(1) 
-#define  C_INSERT if (!strcmp(p->str,"INSERT")) while(1)  
-#define  C_SELECT if (!strcmp(p->str,"SELECT")) while(1) 
-#define  C_DELETE if (!strcmp(p->str,"DELETE")) while(1) 
-#define  C_DESCRIBE if (!strcmp(p->str,"DESCRIBE")) while(1) 
+#define  C_CREATE if ((!strcmp(p->str,"CREATE"))||(!strcmp(p->str,"create"))) while(1) 
+#define  C_INSERT if (!strcmp(p->str,"INSERT")||(!strcmp(p->str,"insert"))) while(1)  
+#define  C_SELECT if (!strcmp(p->str,"SELECT")||(!strcmp(p->str,"select"))) while(1) 
+#define  C_DELETE if (!strcmp(p->str,"DELETE")||(!strcmp(p->str,"delete"))) while(1) 
+#define  C_DESCRIBE if (!strcmp(p->str,"DESCRIBE")||(!strcmp(p->str,"describe"))) while(1) 
 
 
 
@@ -63,7 +63,7 @@ if (!list->count) return 0;
 	    if (_s[0]==',') {puts(", found");continue;}
 	    if (_s[0]=='"') {puts(" string found");  continue;}
 	    if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -2;}
-            if (!strcmp(_s,"INDEXED"))//и проверяем индексируемый ли столбец
+            if (!strcmp(_s,"INDEXED")||(!strcmp(p->str,"indexed")))//и проверяем индексируемый ли столбец
             {puts("INDEXED found");//если да создаем столбец как индексируемый
 	      		_step;//шагаем
 	      			_step;//шагаем
@@ -87,7 +87,7 @@ if (!list->count) return 0;
 	 {puts("insert found");
 	 _step
 	 if (!isSymbol(_s)) {printf("unexpected input%s\n",_s);return -2;}
-	 if (!strcmp(_s,"INTO")) {puts ("INTO acheived"); _step }
+	 if (!strcmp(_s,"INTO")||(!strcmp(p->str,"into"))) {puts ("INTO acheived"); _step }
 	 dtable * tmptable = dbase_find(base,_s);//
 	 if (!tmptable) {printf("There isn`t table %s",_s);return -2;} else 
 	 		{printf("Table %s found\n",_s);
@@ -106,16 +106,17 @@ if (!list->count) return 0;
 	    if (_s[0]==',') {puts(", found");continue;}
 	    if (_s[0]=='"') {printf(" string %i found\n",count); count++; continue;}
 	    if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -2;}
-            if (count>(tmptable->count*2)) 
+            if (count>(tmptable->count*2+1)) 
             		{printf("trying to add more cols there in table%li\n",tmptable->count);break;}
 	    dcol_add(tcol,create_cell(_s));//
-	    tcol=tcol->next;//
-	    if (!tcol) {printf("There isn`t col named %s\n",tcol->name);  continue;}	    
+	    if (tcol->next) tcol=tcol->next; else break;//
+	    if (!tcol) {printf("There isn`t col named %s\n",_s);  continue;}	    
 	 	}//---------------------------------------------
 	 	                }
 	 _step
 	 if (_s[0]==';') {printf("Inserting %i cols succesfull\n",count/2);return 2;}
-	 return 2;}
+	 puts("Unexpected end of command");
+	 return -2;}
 //=========================================SELECT=======================================	 
 	 C_SELECT
 	 {puts("select found");
@@ -123,7 +124,7 @@ if (!list->count) return 0;
 	 _step
 	 if (_s[0]=='*') {	puts("Print whole table");
 	 		_step;
-	 		 if (!strcmp(_s,"FROM")) {puts ("FROM acheived");} else 
+	 		 if (!strcmp(_s,"FROM")||(!strcmp(p->str,"from"))) {puts ("FROM acheived");} else 
 	 		 	{puts("FROM expected but not founf");return -3;}
 	 		_step;
 	 		printf("Searching tabl %s\n",_s);
@@ -137,13 +138,13 @@ if (!list->count) return 0;
 		 	return -3;	
 	 		}
 	 if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
-	 if (!strcmp(_s,"FROM")) {puts ("FROM acheived"); _step }
+	 if (!strcmp(_s,"FROM")||(!strcmp(p->str,"from"))) {puts ("FROM acheived"); _step }
 	 dtable * tmptable = dbase_find(base,_s);//
 
 	 if (!tmptable) {printf("There isn`t table %s",_s);return -3;} else 
 	 		printf("Table %s found\n",_s);
 	 _step
-	 if (!strcmp(_s,"WHERE")) {puts ("WHERE acheived");
+	 if (!strcmp(_s,"WHERE")||(!strcmp(p->str,"where"))) {puts ("WHERE acheived");
 while(1){
 	 _step
 	 if (_s[0]=='=') continue;
@@ -174,13 +175,13 @@ while(1){
 	 
 	 _step
 	 if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
-	 if (!strcmp(_s,"FROM")) {puts ("FROM acheived"); _step }
+	 if (!strcmp(_s,"FROM")||(!strcmp(p->str,"from"))) {puts ("FROM acheived"); _step }
 	 dtable * tmptable = dbase_find(base,_s);//
 
 	 if (!tmptable) {printf("There isn`t table %s",_s);return -3;} else 
 	 		printf("Table %s found\n",_s);
 	 _step
-	 if (!strcmp(_s,"WHERE")) {puts ("WHERE acheived");
+	 if (!strcmp(_s,"WHERE")||(!strcmp(p->str,"where"))) {puts ("WHERE acheived");
 while(1){
 	 _step
 	 if (_s[0]=='=') continue;
