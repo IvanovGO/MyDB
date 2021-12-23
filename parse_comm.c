@@ -3,9 +3,9 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
-//printf("-stp-s=%s-\n",p->str);puts("unexpected end");
-#define  _step if (p->next) {p=p->next;} else {return -10;}
-#define  _stback p=p->prev;
+//
+#define  _step if (p->next) {p=p->next;printf("-stp-s=%s-\n",p->str);} else {puts("unexpected end");return -10;}
+//#define  _stback p=p->prev;
 #define  _s p->str
 //printf("!p->str=%s!",p->str);
 #define  _tst 
@@ -21,18 +21,17 @@
 
 
 
-int parse_comm( dlist * list, dbase * base){
+int parse_comm( stacks * root, dbase * base){
 //функция получает ссылку на список dlist с командами  
 //и ссылку на базу данных dbase
 //-------------------------------------------------------
 int count=0;
 char * tmst=NULL;
 //устанавливаем укзатель в начало списка			        
-if (!list->tail) return 0;
- dnode * p = list->tail;
-_step
-_stback
-if (!list->count) return 0;
+if (!root) return 0;
+ stacks * p = root;
+//_step;
+//if (!list->count) return 0;
 //-------------------------------------CREATE----------------------	
 	C_CREATE //если команда создать создаем бесконечный цикл для удобства
 	{ puts("Create table recognized");  
@@ -67,7 +66,7 @@ if (!list->count) return 0;
             {puts("INDEXED found");//если да создаем столбец как индексируемый
 	      		_step;//шагаем
 	      			_step;//шагаем
-	      		dtable_add(t,dcol_create(_s,true));
+	      		dtable_add(t,dcol_create(_s,NULL));
 	                		}else//если нет создаем как неиндексируемый
 	                			{puts("col is not INDEXED");
 						dtable_add(t,dcol_create(_s,false));}

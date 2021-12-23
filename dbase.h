@@ -26,7 +26,7 @@ struct dcol * col;//принадлежность к колонке
 
 typedef struct dcol {//структура колонка
 char * name;//имя
-dindex * indexed;//индексируемая или нет?
+struct dindex * indexed;//индексируемая или нет?
 unsigned int count;//количество принадлежащих ячеек
 struct dcol * next;//следующая колонка
 struct dcol * prev;//предыдущая колонка
@@ -96,7 +96,7 @@ unsigned int dtable_print_todo (dptodo * todo);//
 unsigned int dtable_print_all (dtable * table);//
 dindex * dtable_create_index(dcol * col);//
 //--------------------------COLUMN WORKING
-dcol * dcol_create(char * name, bool indexed);//создать колонку
+dcol * dcol_create(char * name, dindex * index);//создать колонку
 int dcol_add(dcol * col,dcell * cell);//
 bool dcol_is_empty(dcol * col);
 dcell * dcol_remove(dcell * cell);//

@@ -285,13 +285,13 @@ return NULL;} //если не нашли ничего то возвращаем 
 //--------------------------COLUMN WORKING
 //****************************************************************************
 //--------------------------------------СОЗДАНИЕ КОЛОНКИ
-dcol * dcol_create(char * name, bool indexed){//создаем колонку
+dcol * dcol_create(char * name, dindex * index){//создаем колонку
 dcol * p = (dcol *)malloc(sizeof(dcol));//выделяем память
 p->tail=NULL;//ячеек еще нет
 p->head=NULL;//
 p->count=0;//от слова совсем
 p->name=name;//задаем имя
-p->indexed=indexed;//индексируемая (или нет)
+p->indexed=index;//индексируемая (или нет)
 p->table=NULL;//таблица может и есть но не про её честь
 printf("Column by adress %p sucessfully created\n",p);
 return p;}//возвращаем указатель

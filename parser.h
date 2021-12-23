@@ -1,4 +1,5 @@
 #include "dlist.h"
+#include "stacks.h"
 #include "dbase.h" 
 
 /****************************************************************
@@ -8,9 +9,9 @@ parse_str.c  раскладывает строку на составляющие
 parse_comm.c интерпретирует сотавляющие средствами библиотеки dbase
 *****************************************************************/
 
-void parse_string(dlist * list,char * str);// parsing string whit expression
+void parse_string(stacks ** root,char * str);// parsing string whit expression
 
-int parse_comm(dlist * list,dbase * base);
+int parse_comm(stacks * root,dbase * base);
 
 bool isSpacer(char * ch);
 
