@@ -6,10 +6,11 @@
 //---------------------------PUSH----------------------------
 void stacks_push(stacks ** root,char * str){
 stacks * p = (stacks*)malloc(sizeof(stacks));
+//puts("push");
 p->str=str;
 p->next=(*root);
 (*root)=p;
-printf("pushed %s ",(*root)->str);
+//printf("pushed %s ",(*root)->str);
 return ;}
 //---------------------------COUNT---------------------------
 unsigned int stacks_count(stacks * root){
@@ -27,6 +28,20 @@ char * stacks_pop(stacks ** root){
     (*root) = (*root)->next;
     free(prev);
 return val;}
+//----------------------------PRINT-------------------
+void stacks_print(stacks * root){
+ if (root == NULL) {
+        exit(-1);
+    }
+    stacks * p = root;
+    while (p){
+    printf("Stack - %s \n",p->str);
+    p=p->next;
+    }
+
+}
+
+
 //---------------------------CLEAR---------------------------
 void stacks_clear(stacks ** root){
 
@@ -35,7 +50,7 @@ void stacks_clear(stacks ** root){
 stacks * p;
 puts("clear");
 if(root==NULL) return;
-printf("%p %p  \n",*root,(*root)->next);
+//printf("%p %p  \n",*root,(*root)->next);
 
 while ((*root)->next){
 p=(*root)->next;

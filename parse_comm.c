@@ -3,6 +3,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+
 //
 #define  _step if (p->next) {p=p->next;printf("-stp-s=%s-\n",p->str);} else {puts("unexpected end");return -10;}
 //#define  _stback p=p->prev;
@@ -27,7 +28,8 @@ int parse_comm( stacks * root, dbase * base){
 //-------------------------------------------------------
 int count=0;
 char * tmst=NULL;
-//устанавливаем укзатель в начало списка			        
+//устанавливаем укзатель в начало списка			 
+       
 if (!root) return 0;
  stacks * p = root;
 //_step;
@@ -120,6 +122,8 @@ if (!root) return 0;
 	 C_SELECT
 	 {puts("select found");
 	 dptodo * todo=NULL;
+	 stacks * col_list=NULL;
+	 stacks_print(root);
 	 _step
 	 if (_s[0]=='*') {	puts("Print whole table");
 	 		_step;
@@ -135,9 +139,22 @@ if (!root) return 0;
 		 	 if (_s[0]==';') {puts("Select succesfull");return 3;}
 		 	 puts("Unexpected end of SELECT");
 		 	return -3;	
-	 		}
-	 if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
-	 if (!strcmp(_s,"FROM")||(!strcmp(p->str,"from"))) {puts ("FROM acheived"); _step }
+	 		} else 
+	 	if (isSymbol(_s)) 
+	 while(1){
+	    puts("cols iteration");
+	 	stacks_push(&col_list,_s);
+	  	_step;
+	 	if(_s[0]==',') {puts("continue"); continue;}
+ 		 if (!strcmp(_s,"FROM")||(!strcmp(_s,"from"))) {puts ("FROM acheived no *"); break; }
+	 	if(isSymbol(_s)) continue; else break;
+	 		}puts("braked");
+	 		stacks_print(col_list);
+	// if (!isCharacter(_s)) {printf("unexpected input%s\n",_s);return -3;}
+	_step;
+	 printf("THERE _s %s\n",_s);
+	 if (!strcmp(_s,"FROM")||(!strcmp(_s,"from"))) {puts ("FROM acheived"); _step }
+	 
 	 dtable * tmptable = dbase_find(base,_s);//
 
 	 if (!tmptable) {printf("There isn`t table %s",_s);return -3;} else 

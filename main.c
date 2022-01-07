@@ -28,10 +28,10 @@ if(fgets(command,0xff,datafile)){
 	parse_string(&root,command);//парсим команду в последовательность двусвязного списка
 while (root) { 	stacks_push(&invroot,stacks_pop(&root));}
 parse_comm(invroot,tables);//разбор команды
-while (invroot) { printf("%s %p\n",stacks_pop(&invroot),invroot->next);}}
+while (invroot) { printf("\n",stacks_pop(&invroot),invroot->next);}}
 //puts("i home!!");
 
-stacks_clear(&root); //чистим стек команды
+//stacks_clear(&root); //чистим стек команды
 }while(!feof(datafile));//повторяем со следуюзей стркоой файла
 fclose(datafile);//закрываем файл
  }//после чего и/или если файла не было 
@@ -49,9 +49,9 @@ cmnd[strlen(cmnd)-1]=0;
 parse_string(&root,cmnd);//парсим команду
 while (root) { 	stacks_push(&invroot,stacks_pop(&root));}
 parse_comm(invroot,tables);//разбор команды
-while (invroot) { printf("%s %p\n",stacks_pop(&invroot),invroot->next);}
+while (invroot) { stacks_pop(&invroot);}
 
-printf("etc-%s %i",cmnd,strcmp(cmnd,"exit"));
+//printf("etc-%s %i",cmnd,strcmp(cmnd,"exit"));
 }while (strcmp(cmnd,"exit")*strcmp(cmnd,"EXIT"));
 puts ("Thats all, folks!");
 return 0;//всё

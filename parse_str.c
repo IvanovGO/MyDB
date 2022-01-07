@@ -59,13 +59,14 @@ if (len) {//если чтото есть
 	s[len]=0;//добавляем окончание строки
 	//dlist_add(list,dnode_add(s,NULL));//заносим в список
 	stacks_push(root,s);
-	printf("parsed - %s %i\n",s,strlen(s));
+	//printf("parsed - %s %i\n",s,strlen(s));
 	}len=0;//обнуляем счетчик
 if (isDivider(ch)) {char * c = (char*)malloc(sizeof(char)+1);//если нашли разделитель выделяем под него память
 		    *c=*ch;//копируем значение
 		    c[1]=0;
 			stacks_push(root,c);
 			//dlist_add(list,dnode_add(c,NULL));//заносим в список
-			printf("!%c\n",*c);}
+			//printf("!%c\n",*c);
+			}
 }}      		
 
